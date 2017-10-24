@@ -1,0 +1,7 @@
+name: bejeweled
+channels:
+    - cogsci
+dependencies:
+    - python=3.5
+    - pygame=1.9.2
+    - numpy=1.13
