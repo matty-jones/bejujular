@@ -58,12 +58,12 @@ class bejujular:
 class gamePiece:
     def __init__(self, imageLoc, occupationMatrix):
         while True:
-            gridPosnX = R.randint(0, occupationMatrix.shape[0] - 1)
-            gridPosnY = R.randint(0, occupationMatrix.shape[1] - 1)
-            if occupationMatrix[gridPosnX, gridPosnY] == 0:
-                occupationMatrix[gridPosnX, gridPosnY] = 1
+            self.gridPosnX = R.randint(0, occupationMatrix.shape[0] - 1)
+            self.gridPosnY = R.randint(0, occupationMatrix.shape[1] - 1)
+            if occupationMatrix[self.gridPosnX, self.gridPosnY] == 0:
+                occupationMatrix[self.gridPosnX, self.gridPosnY] = 1
                 break
-        [self.x, self.y] = self.getPixelPosn([gridPosnX, gridPosnY])
+        [self.x, self.y] = self.getPixelPosn([self.gridPosnX, self.gridPosnY])
         self.occupationMatrix = occupationMatrix
         self.renderObject = pygame.image.load(imageLoc).convert()
 
