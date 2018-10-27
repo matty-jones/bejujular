@@ -23,14 +23,9 @@ class bejujular:
             (window_width, window_height), pygame.HWSURFACE
         )
         self.running = True
-        self.grid = pygame.image.load("./assets/grid.png").convert()
-        occupation_matrix = np.zeros(grid_size)
-        self.pieces = []
-        for pieceNumber in range(grid_size[0] * grid_size[1]):
-            pieceType = R.choice(piece_types)
-            self.pieces.append(
-                game_piece("./assets/" + pieceType + ".png", occupation_matrix)
-            )
+        grid = game_grid()
+        self.grid = grid.grid
+        self.pieces = grid.pieces
 
     def on_event(self, event):
         if event.type == QUIT:
@@ -79,11 +74,6 @@ class game_piece:
         # Pieces are 85x85 pixels.
         # Top left of grid is at border + cell_line_thickness
         # Grid extent = border + cell_line_thickness to window_width - border
-        # print(window_width - border)
-        # print(border + cell_line_thickness)
-        # print(np.round(float((window_width - border) - (border + cell_line_thickness)) / float(grid_size[0])))
-        # print(grid_posn[0])
-        # exit()
         pixel_x = (
             (border + cell_line_thickness)
             + (
@@ -114,7 +104,22 @@ class game_piece:
 
 
 class game_grid:
-    pass
+    def __init__(self):
+        self.grid = pygame.image.load("./assets/grid.png").convert()
+        self.occupation_matrix = np.zeros(grid_size)
+        self.pieces = []
+        self.piece_coords = []
+        for piece_number in range(grid_size[0] * grid_size[1]):
+            piece_type = R.choice(piece_types)
+            new_piece = game_piece("./assets/" + piece_type + ".png", self.occupation_matrix)
+            self.pieces.append(new_piece)
+            self.piece_coords.append((new_piece.x, new_piece.y))
+        print(self.piece_coords)
+
+    def find_nearest_piece(self, posn):
+        pass
+
+
 
 
 if __name__ == "__main__":
