@@ -8,7 +8,8 @@ windowWidth = 800
 windowHeight = 800
 border = 10
 cellLineThickness = 5
-pieceTypes = ['circle', 'triangle', 'star', 'pentagon', 'hexagon', 'diamond']
+pieceTypes = ["circle", "triangle", "star", "pentagon", "hexagon", "diamond"]
+
 
 class bejujular:
     def __init__(self):
@@ -18,14 +19,18 @@ class bejujular:
 
     def onInit(self):
         pygame.init()
-        self.displaySurf = pygame.display.set_mode((windowWidth, windowHeight), pygame.HWSURFACE)
+        self.displaySurf = pygame.display.set_mode(
+            (windowWidth, windowHeight), pygame.HWSURFACE
+        )
         self.running = True
         self.grid = pygame.image.load("./assets/grid.png").convert()
         occupationMatrix = np.zeros(gridSize)
         self.pieces = []
         for pieceNumber in range(gridSize[0] * gridSize[1]):
             pieceType = R.choice(pieceTypes)
-            self.pieces.append(gamePiece("./assets/" + pieceType + ".png", occupationMatrix))
+            self.pieces.append(
+                gamePiece("./assets/" + pieceType + ".png", occupationMatrix)
+            )
 
     def onEvent(self, event):
         if event.type == QUIT:
@@ -74,19 +79,42 @@ class gamePiece:
         # Pieces are 85x85 pixels.
         # Top left of grid is at border + cellLineThickness
         # Grid extent = border + cellLineThickness to windowWidth - border
-        #print(windowWidth - border)
-        #print(border + cellLineThickness)
-        #print(np.round(float((windowWidth - border) - (border + cellLineThickness)) / float(gridSize[0])))
-        #print(gridPosn[0])
-        #exit()
-        pixelX = (border + cellLineThickness) + (gridPosn[0] * (np.round(float((windowWidth - border) - (border + cellLineThickness)) / float(gridSize[0])))) + 5
-        pixelY = (border + cellLineThickness) + (gridPosn[1] * (np.round(float((windowWidth - border) - (border + cellLineThickness)) / float(gridSize[1])))) + 7
+        # print(windowWidth - border)
+        # print(border + cellLineThickness)
+        # print(np.round(float((windowWidth - border) - (border + cellLineThickness)) / float(gridSize[0])))
+        # print(gridPosn[0])
+        # exit()
+        pixelX = (
+            (border + cellLineThickness)
+            + (
+                gridPosn[0]
+                * (
+                    np.round(
+                        float((windowWidth - border) - (border + cellLineThickness))
+                        / float(gridSize[0])
+                    )
+                )
+            )
+            + 5
+        )
+        pixelY = (
+            (border + cellLineThickness)
+            + (
+                gridPosn[1]
+                * (
+                    np.round(
+                        float((windowWidth - border) - (border + cellLineThickness))
+                        / float(gridSize[1])
+                    )
+                )
+            )
+            + 7
+        )
         return [pixelX, pixelY]
 
 
 class gameGrid:
     pass
-
 
 
 if __name__ == "__main__":
