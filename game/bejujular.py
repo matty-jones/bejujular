@@ -3,121 +3,121 @@ from pygame.locals import *
 import random as R
 import numpy as np
 
-gridSize = [8, 8]
-windowWidth = 800
-windowHeight = 800
+grid_size = [8, 8]
+window_width = 800
+window_height = 800
 border = 10
-cellLineThickness = 5
-pieceTypes = ["circle", "triangle", "star", "pentagon", "hexagon", "diamond"]
+cell_line_thickness = 5
+piece_types = ["circle", "triangle", "star", "pentagon", "hexagon", "diamond"]
 
 
 class bejujular:
     def __init__(self):
         self.running = True
-        self.displaySurf = None
-        self.imageSurf = None
+        self.display_surf = None
+        self.image_surf = None
 
-    def onInit(self):
+    def on_init(self):
         pygame.init()
-        self.displaySurf = pygame.display.set_mode(
-            (windowWidth, windowHeight), pygame.HWSURFACE
+        self.display_surf = pygame.display.set_mode(
+            (window_width, window_height), pygame.HWSURFACE
         )
         self.running = True
         self.grid = pygame.image.load("./assets/grid.png").convert()
-        occupationMatrix = np.zeros(gridSize)
+        occupation_matrix = np.zeros(grid_size)
         self.pieces = []
-        for pieceNumber in range(gridSize[0] * gridSize[1]):
-            pieceType = R.choice(pieceTypes)
+        for pieceNumber in range(grid_size[0] * grid_size[1]):
+            pieceType = R.choice(piece_types)
             self.pieces.append(
-                gamePiece("./assets/" + pieceType + ".png", occupationMatrix)
+                game_piece("./assets/" + pieceType + ".png", occupation_matrix)
             )
 
-    def onEvent(self, event):
+    def on_event(self, event):
         if event.type == QUIT:
             self.running = False
         if event.type == MOUSEBUTTONDOWN:
             position = pygame.mouse.get_pos()
             print(position)
 
-    def onLoop(self):
+    def on_loop(self):
         pass
 
-    def onRender(self):
-        self.displaySurf.blit(self.grid, (border, border))
+    def on_render(self):
+        self.display_surf.blit(self.grid, (border, border))
         for piece in self.pieces:
-            self.displaySurf.blit(piece.renderObject, (piece.x, piece.y))
+            self.display_surf.blit(piece.render_object, (piece.x, piece.y))
         pygame.display.flip()
 
-    def onCleanup(self):
+    def on_cleanup(self):
         pygame.quit()
 
-    def onExecute(self):
-        if self.onInit() == False:
+    def on_execute(self):
+        if self.on_init() == False:
             self.running = False
 
         while self.running:
             for event in pygame.event.get():
-                self.onEvent(event)
-            self.onLoop()
-            self.onRender()
-        self.onCleanup()
+                self.on_event(event)
+            self.on_loop()
+            self.on_render()
+        self.on_cleanup()
 
 
-class gamePiece:
-    def __init__(self, imageLoc, occupationMatrix):
+class game_piece:
+    def __init__(self, image_loc, occupation_matrix):
         while True:
-            self.gridPosnX = R.randint(0, occupationMatrix.shape[0] - 1)
-            self.gridPosnY = R.randint(0, occupationMatrix.shape[1] - 1)
-            if occupationMatrix[self.gridPosnX, self.gridPosnY] == 0:
-                occupationMatrix[self.gridPosnX, self.gridPosnY] = 1
+            self.grid_posn_x = R.randint(0, occupation_matrix.shape[0] - 1)
+            self.grid_posn_y = R.randint(0, occupation_matrix.shape[1] - 1)
+            if occupation_matrix[self.grid_posn_x, self.grid_posn_y] == 0:
+                occupation_matrix[self.grid_posn_x, self.grid_posn_y] = 1
                 break
-        [self.x, self.y] = self.getPixelPosn([self.gridPosnX, self.gridPosnY])
-        self.occupationMatrix = occupationMatrix
-        self.renderObject = pygame.image.load(imageLoc).convert()
+        [self.x, self.y] = self.get_pixel_posn([self.grid_posn_x, self.grid_posn_y])
+        self.occupation_matrix = occupation_matrix
+        self.render_object = pygame.image.load(image_loc).convert()
 
-    def getPixelPosn(self, gridPosn):
+    def get_pixel_posn(self, grid_posn):
         # Pieces are 85x85 pixels.
-        # Top left of grid is at border + cellLineThickness
-        # Grid extent = border + cellLineThickness to windowWidth - border
-        # print(windowWidth - border)
-        # print(border + cellLineThickness)
-        # print(np.round(float((windowWidth - border) - (border + cellLineThickness)) / float(gridSize[0])))
-        # print(gridPosn[0])
+        # Top left of grid is at border + cell_line_thickness
+        # Grid extent = border + cell_line_thickness to window_width - border
+        # print(window_width - border)
+        # print(border + cell_line_thickness)
+        # print(np.round(float((window_width - border) - (border + cell_line_thickness)) / float(grid_size[0])))
+        # print(grid_posn[0])
         # exit()
-        pixelX = (
-            (border + cellLineThickness)
+        pixel_x = (
+            (border + cell_line_thickness)
             + (
-                gridPosn[0]
+                grid_posn[0]
                 * (
                     np.round(
-                        float((windowWidth - border) - (border + cellLineThickness))
-                        / float(gridSize[0])
+                        float((window_width - border) - (border + cell_line_thickness))
+                        / float(grid_size[0])
                     )
                 )
             )
             + 5
         )
-        pixelY = (
-            (border + cellLineThickness)
+        pixel_y = (
+            (border + cell_line_thickness)
             + (
-                gridPosn[1]
+                grid_posn[1]
                 * (
                     np.round(
-                        float((windowWidth - border) - (border + cellLineThickness))
-                        / float(gridSize[1])
+                        float((window_width - border) - (border + cell_line_thickness))
+                        / float(grid_size[1])
                     )
                 )
             )
             + 7
         )
-        return [pixelX, pixelY]
+        return [pixel_x, pixel_y]
 
 
-class gameGrid:
+class game_grid:
     pass
 
 
 if __name__ == "__main__":
     R.seed(928345097818235460)
     game = bejujular()
-    game.onExecute()
+    game.on_execute()
