@@ -30,6 +30,9 @@ class bejujular:
     def onEvent(self, event):
         if event.type == QUIT:
             self.running = False
+        if event.type == MOUSEBUTTONDOWN:
+            position = pygame.mouse.get_pos()
+            print(position)
 
     def onLoop(self):
         pass
@@ -79,6 +82,11 @@ class gamePiece:
         pixelX = (border + cellLineThickness) + (gridPosn[0] * (np.round(float((windowWidth - border) - (border + cellLineThickness)) / float(gridSize[0])))) + 5
         pixelY = (border + cellLineThickness) + (gridPosn[1] * (np.round(float((windowWidth - border) - (border + cellLineThickness)) / float(gridSize[1])))) + 7
         return [pixelX, pixelY]
+
+
+class gameGrid:
+    pass
+
 
 
 if __name__ == "__main__":
