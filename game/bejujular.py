@@ -2,6 +2,8 @@ import pygame
 from pygame.locals import *
 import random as R
 import numpy as np
+from scipy import spatial
+
 
 grid_size = [8, 8]
 window_width = 800
@@ -16,6 +18,7 @@ class bejujular:
         self.running = True
         self.display_surf = None
         self.image_surf = None
+        self.selected_piece_ID = False
 
     def on_init(self):
         pygame.init()
@@ -23,23 +26,21 @@ class bejujular:
             (window_width, window_height), pygame.HWSURFACE
         )
         self.running = True
-        grid = game_grid()
-        self.grid = grid.grid
-        self.pieces = grid.pieces
+        self.grid = game_grid()
 
     def on_event(self, event):
         if event.type == QUIT:
             self.running = False
         if event.type == MOUSEBUTTONDOWN:
             position = pygame.mouse.get_pos()
-            print(position)
+            self.select_piece(position)
 
     def on_loop(self):
         pass
 
     def on_render(self):
-        self.display_surf.blit(self.grid, (border, border))
-        for piece in self.pieces:
+        self.display_surf.blit(self.grid.grid, (border, border))
+        for piece in self.grid.pieces:
             self.display_surf.blit(piece.render_object, (piece.x, piece.y))
         pygame.display.flip()
 
@@ -56,6 +57,19 @@ class bejujular:
             self.on_loop()
             self.on_render()
         self.on_cleanup()
+
+    def select_piece(self):
+        closest = self.grid.find_nearest_piece(position)
+        if self.selected_piece_ID is False:
+            # Piece 1 selected
+            self.selected_piece_ID = closest[0]
+        elif closest[0] == self.selected_piece_ID:
+            # Selected same piece again, therefore deselect
+            self.selected_piece_ID = False
+        else:
+            # New piece selected, check if adjacent
+            pass
+
 
 
 class game_piece:
@@ -113,12 +127,19 @@ class game_grid:
             piece_type = R.choice(piece_types)
             new_piece = game_piece("./assets/" + piece_type + ".png", self.occupation_matrix)
             self.pieces.append(new_piece)
-            self.piece_coords.append((new_piece.x, new_piece.y))
-        print(self.piece_coords)
+            # +42 comes from the fact that new_piece.x and new_piece.y
+            # correspond to the top left of each grid element. We want
+            # the centre, and the pieces are 85x85 pixels.
+            self.piece_coords.append((new_piece.x + 42, new_piece.y + 42))
+        # Create a KDTree for finding the closest piece
+        self.tree = spatial.KDTree(self.piece_coords)
 
     def find_nearest_piece(self, posn):
-        pass
+        closest = self.tree.query(posn)
+        return closest[1], self.piece_coords[closest[1]]
 
+    def check_piece_adjacent(self, piece_ID_1, piece_ID_2):
+        pass
 
 
 
